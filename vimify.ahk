@@ -14,7 +14,14 @@ if (ClipSaved == clipboard Or (!ErrorLevel And text_selected)) ; !ErrorLevel => 
 FileAppend, %clipboard%, %tmp% ; save to temp file
 }
 params := "vim -b " . tmp . " +0" ; command to open temp file in vim with the cursor at the start
+
+clipboard := ClipSaved ; restore clipboard while vim is running
+
 RunWait, %params% ; run vim
+
+ClipSaved := ClipboardAll
+clipboard := ""
+
 FileRead, clipboard_temp, %tmp% ; read back temp file
 unchanged := (clipboard_temp == clipboard) ; true if the file wasn't changed
 clipboard := clipboard_temp 
